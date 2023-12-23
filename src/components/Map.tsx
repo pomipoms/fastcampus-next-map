@@ -1,20 +1,37 @@
 /*GLOBAL KAKAO */
 import Script from 'next/script';
+import * as stores from '@/data/store_data.json'
 declare global {
   interface Window {
     kakao: any;
   }
 }
+const DEFAULT_LAT = 37.497625203;
+const DEFAULT_LNG = 127.03088379;
 
 export default function Map(){
     const loadKakaoMap = () => {
         window.kakao.maps.load(()=> {
           const mapContainer = document.getElementById('map');
           const mapOption = {
-            center: new window.kakao.maps.LatLng(37.5519, 126.9918),
+            center: new window.kakao.maps.LatLng(DEFAULT_LAT, DEFAULT_LNG),
             level : 3,
           };
-          new window.kakao.maps.Map(mapContainer, mapOption);
+          const map = new window.kakao.maps.Map(mapContainer, mapOption);
+
+          //Restaurant data MARKER
+          stores?.['DATA']?.map((store) => {
+            var markerPosition = new window.kakao.maps.LatLng(
+                store?.y_dnts,
+                store?.x_cnts);
+
+            var marker = new window.kakao.maps.Marker({
+                position: markerPosition,
+            });
+
+            marker.setMap(map);
+            
+          });
         });
       };
       
